@@ -6,6 +6,9 @@ const axiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  proxy: {
+    protocol: "https",
+  },
 });
 
 export default axiosInstance;
