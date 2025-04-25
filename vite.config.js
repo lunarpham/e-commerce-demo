@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:7860",
+        target: "https://lunsheff-product-mock-api.hf.space",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
