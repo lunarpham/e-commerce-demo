@@ -10,6 +10,7 @@ export default defineConfig({
         target: "https://lunsheff-product-mock-api.hf.space",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
+        secure: false,
       },
     },
   },
