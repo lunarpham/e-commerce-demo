@@ -5,7 +5,7 @@ import Home from "./pages/Home";
 import Product from "./pages/Product";
 import Order from "./pages/Order";
 import Navbar from "./components/layout/Navbar";
-import Sidebar from "./components/layout/Sidebar";
+import SidebarWithDrawer from "./components/layout/SidebarWithDrawer";
 import { Grid, GridItem } from "@chakra-ui/react";
 import { LayoutPanelLeft, Package, Users, ShoppingCart } from "lucide-react";
 
@@ -18,7 +18,6 @@ function App() {
       icon: <LayoutPanelLeft />,
       description: "ECommerce application",
     },
-
     {
       route: "/user",
       element: <User />,
@@ -47,19 +46,21 @@ function App() {
       <Grid
         templateAreas={{
           md: `"header header"
-                  "sidebar main"`,
-          base: `"header header"
-                  "main main"`,
+               "sidebar main"`,
+          base: `"header"
+                "main"`,
         }}
         gridTemplateRows={"auto 1fr"}
         gridTemplateColumns={{ md: "200px 1fr", base: "1fr" }}
       >
-        <GridItem area={"header"}>
+        <GridItem area={"header"} zIndex={1000} position="sticky" top="0">
+          {/* Navbar is always visible */}
           <Navbar />
         </GridItem>
-        <GridItem area={"sidebar"} display={{ base: "none", md: "block" }}>
-          <Sidebar routes={routes} />
-        </GridItem>
+
+        {/* SidebarWithDrawer handles both desktop and mobile navigation */}
+        <SidebarWithDrawer routes={routes} />
+
         <GridItem area={"main"}>
           <BrowserRouter>
             <Routes>
