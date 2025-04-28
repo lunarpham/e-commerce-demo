@@ -102,7 +102,12 @@ export default function ProductForm({
                       placeholder={errors.name ? errors.name : "Product Name"}
                       width={"100%"}
                       borderWidth={1}
-                      borderColor={errors.name ? "red.500" : "gray.300"}
+                      borderColor={errors.name ? "red.500" : "gray.200"}
+                      _focus={{
+                        ring: "2px",
+                        ringOffset: "2px",
+                        ringColor: "black",
+                      }}
                       height={10}
                       value={formData.name}
                       onChange={handleInputChange}
@@ -122,7 +127,12 @@ export default function ProductForm({
                       placeholder="Product Description"
                       width={"100%"}
                       borderWidth={1}
-                      borderColor="gray.300"
+                      borderColor="gray.200"
+                      _focus={{
+                        ring: "2px",
+                        ringOffset: "2px",
+                        ringColor: "black",
+                      }}
                       height={36}
                       value={formData.description}
                       onChange={handleInputChange}
@@ -138,7 +148,12 @@ export default function ProductForm({
                         placeholder="Product Price"
                         width={"100%"}
                         borderWidth={1}
-                        borderColor="gray.300"
+                        borderColor="gray.200"
+                        _focus={{
+                          ring: "2px",
+                          ringOffset: "2px",
+                          ringColor: "black",
+                        }}
                         height={10}
                         step={0.01}
                         min={0}
@@ -155,7 +170,12 @@ export default function ProductForm({
                         placeholder="Product Stock"
                         width={"100%"}
                         borderWidth={1}
-                        borderColor="gray.300"
+                        borderColor="gray.200"
+                        _focus={{
+                          ring: "2px",
+                          ringOffset: "2px",
+                          ringColor: "black",
+                        }}
                         height={10}
                         step={1}
                         min={0}
@@ -173,7 +193,12 @@ export default function ProductForm({
                       placeholder="Product Category"
                       width={"100%"}
                       borderWidth={1}
-                      borderColor="gray.300"
+                      borderColor="gray.200"
+                      _focus={{
+                        ring: "2px",
+                        ringOffset: "2px",
+                        ringColor: "black",
+                      }}
                       height={10}
                       value={formData.category}
                       onChange={handleInputChange}
@@ -185,17 +210,22 @@ export default function ProductForm({
             <Dialog.Footer>
               <Flex justifyContent={"end"} gap={2}>
                 <Button
-                  variant="solid"
-                  colorPalette="gray"
-                  size="sm"
+                  borderRadius="md"
+                  color={"black"}
+                  _hover={{ backgroundColor: "gray.200" }}
+                  borderWidth={1}
+                  borderColor={"gray.300"}
                   onClick={() => onClose(false)}
                 >
                   Cancel
                 </Button>
                 <Button
-                  variant="solid"
-                  colorPalette={"black"}
-                  size="sm"
+                  borderRadius="md"
+                  backgroundColor={"black"}
+                  color={"white"}
+                  _hover={{ opacity: 0.85 }}
+                  borderWidth={1}
+                  borderColor={"black"}
                   isLoading={isLoading}
                   type="submit"
                 >

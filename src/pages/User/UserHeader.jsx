@@ -13,6 +13,7 @@ export default function UserHeader({ onAddNewUser }) {
         color={"white"}
         variant="solid"
         onClick={onAddNewUser}
+        _hover={{ opacity: 0.85 }}
       >
         <Plus size={16} color="white" /> Add User
       </Button>

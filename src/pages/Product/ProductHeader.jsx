@@ -13,6 +13,7 @@ export default function ProductHeader({ onAddClick }) {
         color={"white"}
         variant="solid"
         onClick={onAddClick}
+        _hover={{ opacity: 0.85 }}
       >
         <Plus size={16} color="white" /> Add Product
       </Button>
