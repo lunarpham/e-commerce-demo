@@ -31,7 +31,7 @@ export default function ProductList({
       borderWidth="1px"
       borderColor="gray.200"
     >
-      <Table.ScrollArea>
+      <Table.ScrollArea maxW={{ md: "full", base: "xl" }}>
         <Table.Root variant={"gray"} radius="lg">
           <Table.Header>
             <Table.Row

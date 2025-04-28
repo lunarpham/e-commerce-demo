@@ -32,7 +32,7 @@ export default function UserList({
       borderWidth="1px"
       borderColor="gray.200"
     >
-      <Table.ScrollArea>
+      <Table.ScrollArea maxW={{ md: "full", base: "xl" }}>
         <Table.Root variant={"gray"}>
           <Table.Header>
             <Table.Row backgroundColor={"white"} color={"gray.500"}>
