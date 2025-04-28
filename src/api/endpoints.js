@@ -5,4 +5,6 @@ export const ENDPOINTS = {
   USER: (id) => `/users/${id}`,
   ORDERS: "/orders",
   ORDER: (id) => `/orders/${id}`,
+  ORDER_STATUS: (id) => `/orders/${id}/status`,
+  DASHBOARD: "/dashboard",
 };
