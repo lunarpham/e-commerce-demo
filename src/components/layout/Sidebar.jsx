@@ -5,8 +5,10 @@ export default function Sidebar({ routes }) {
   return (
     <Box
       as="aside"
-      minHeight={"100vh"}
-      height="100%"
+      height="calc(100vh - 4rem)"
+      overflow="auto"
+      position="sticky"
+      top="4rem"
       padding={4}
       color={"black"}
       backgroundColor="white"

@@ -1,5 +1,5 @@
 import React from "react";
-import { Flex, Text, Button } from "@chakra-ui/react";
+import { Flex, Text, IconButton } from "@chakra-ui/react";
 import { AlignJustify } from "lucide-react";
 
 export default function Navbar() {
@@ -7,37 +7,36 @@ export default function Navbar() {
     <Flex
       as="nav"
       bg="white"
-      px={4}
+      px={8}
       color="black"
       align="center"
       justify="space-between"
-      position="sticky"
       borderBottom="solid"
       borderColor="gray.200"
-      top={0}
+      borderWidth={1}
       zIndex={1000}
       minHeight="4rem"
+      position="sticky"
+      top="0"
     >
       <Flex align="center" gap={4}>
-        <Button
+        <IconButton
           variant="plain"
           background={"white"}
           color="black"
           size="sm"
           fontWeight="semibold"
           outline={false}
-          borderColor={"gray.400"}
-          borderWidth={2}
+          borderColor={"gray.300"}
+          borderWidth={1}
           borderRadius="md"
           _hover={{ background: "gray.200" }}
-          _active={{ background: "blue.700" }}
-          _focus={{ boxShadow: "outline" }}
-          lg={{ display: "none" }}
-          md={{ display: "none" }}
           display={{ base: "flex", md: "none" }}
+          onClick={() => window.toggleDrawer && window.toggleDrawer()}
         >
           <AlignJustify size={24} color="black" />
-        </Button>
+        </IconButton>
+
         <Text as={"a"} fontSize="lg" fontWeight="semibold" href="/">
           E-commerce Dashboard
         </Text>
