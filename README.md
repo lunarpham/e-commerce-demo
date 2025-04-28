@@ -2,8 +2,6 @@
 
 A comprehensive React.js dashboard for managing an e-commerce platform, featuring product management, user management, order tracking, and sales analytics.
 
-![E-commerce Dashboard](https://via.placeholder.com/800x400?text=E-commerce+Dashboard)
-
 ## Features
 
 ### Dashboard Analytics
