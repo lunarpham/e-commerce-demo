@@ -59,12 +59,19 @@ export const updateUser = createAsyncThunk(
 
 export const deleteUser = createAsyncThunk(
   "user/deleteUser",
-  async (id, { rejectWithValue }) => {
+  async (id, { rejectWithValue, dispatch }) => {
     try {
       await axios.delete(ENDPOINTS.USER(id));
       return { id }; // Return the ID for filtering
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      if (error.response && error.response.status === 404) {
+        // Resource was already deleted, refresh the product list
+        dispatch(fetchUsers());
+        // Return a special payload to indicate this was a "not found" situation
+        return { id, alreadyRemoved: true };
+      }
+      // For other errors, reject with error data
+      return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
@@ -145,9 +152,12 @@ const userSlice = createSlice({
       })
       .addCase(deleteUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.users = state.users.filter(
-          (user) => user.id !== action.payload.id
-        );
+        if (!action.payload.alreadyRemoved) {
+          // Only filter if it wasn't already removed
+          state.users = state.users.filter(
+            (user) => user.id !== action.payload.id
+          );
+        }
       })
       .addCase(deleteUser.rejected, (state, action) => {
         state.isLoading = false;
