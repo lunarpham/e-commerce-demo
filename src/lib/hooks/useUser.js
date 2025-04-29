@@ -9,6 +9,7 @@ import {
   clearUser,
   clearError,
 } from "../../store/slices/userSlice";
+import { toaster } from "../../components/ui/toaster";
 
 export const useUser = () => {
   const dispatch = useDispatch();
@@ -83,12 +84,30 @@ export const useUser = () => {
     try {
       if (isEditMode && currentUserId) {
         await dispatch(updateUser({ id: currentUserId, userData }));
+        toaster.create({
+          title: "User updated",
+          description: `${formData.name}'s profile has been updated.`,
+          type: "success",
+          duration: 3000,
+        });
       } else {
         await dispatch(createUser(userData));
+        toaster.create({
+          title: "User created",
+          description: `${formData.name} has been added as a new ${formData.role}.`,
+          type: "success",
+          duration: 3000,
+        });
       }
       handleCloseDialog();
     } catch (error) {
       console.error("Error creating/updating user:", error);
+      toaster.create({
+        title: "Error",
+        description: "Failed to save user information",
+        type: "error",
+        duration: 5000,
+      });
     }
   };
 
@@ -96,8 +115,20 @@ export const useUser = () => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       try {
         await dispatch(deleteUser(id));
+        toaster.create({
+          title: "User deleted",
+          description: "The user has been removed successfully.",
+          type: "success",
+          duration: 3000,
+        });
       } catch (err) {
         console.error(err);
+        toaster.create({
+          title: "Error",
+          description: "Failed to delete user",
+          type: "error",
+          duration: 5000,
+        });
       }
     }
   };

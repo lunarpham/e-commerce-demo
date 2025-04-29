@@ -61,6 +61,13 @@ export const useOrder = () => {
       })
     );
 
+    const loadingToast = toaster.create({
+      title: "Updating order status",
+      description: `Changing ${orderName} from ${previousStatus} to ${newStatus}`,
+      type: "loading",
+      duration: null, // Don't automatically dismiss
+    });
+
     // Then update the status in the background
     dispatch(
       updateOrderStatus({
@@ -70,9 +77,25 @@ export const useOrder = () => {
       })
     )
       .unwrap()
+      .then(() => {
+        // Success - dismiss loading toast and show success
+        toaster.dismiss(loadingToast.id);
+        toaster.create({
+          title: "Order updated",
+          description: `${orderName} status changed to ${newStatus}`,
+          type: "success",
+          duration: 3000,
+        });
+      })
       .catch((error) => {
+        toaster.dismiss(loadingToast.id);
         console.error("Failed to update order status:", error);
-        toaster.error(`Failed to update ${orderName} status`);
+        toaster.create({
+          title: "Update failed",
+          description: `Failed to update ${orderName} status`,
+          type: "error",
+          duration: 5000,
+        });
       });
   };
   // Simplified status change handler - directly applies changes without warning

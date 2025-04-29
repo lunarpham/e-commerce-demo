@@ -9,6 +9,7 @@ import {
   clearProduct,
   clearError,
 } from "../../store/slices/productSlice";
+import { toaster } from "../../components/ui/toaster";
 
 const initialState = {
   name: "",
@@ -29,13 +30,7 @@ export const useProduct = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentProductId, setCurrentProductId] = useState(null);
-  const [formInitialData, setFormInitialData] = useState({
-    name: "",
-    description: "",
-    price: 0,
-    stock: 0,
-    category: "",
-  });
+  const [formInitialData, setFormInitialData] = useState({ initialState });
 
   // Fetch products on initial load
   useEffect(() => {
@@ -103,11 +98,29 @@ export const useProduct = () => {
     try {
       if (isEditMode && currentProductId) {
         await dispatch(updateProduct({ id: currentProductId, productData }));
+        toaster.create({
+          title: "Product updated",
+          description: `${formData.name} has been updated successfully.`,
+          type: "success",
+          duration: 3000,
+        });
       } else {
         await dispatch(createProduct(productData));
+        toaster.create({
+          title: "Product created",
+          description: `${formData.name} has been added to your inventory.`,
+          type: "success",
+          duration: 3000,
+        });
       }
       handleCloseDialog();
     } catch (error) {
+      toaster.create({
+        title: "Error",
+        description: error.message || "Failed to save product",
+        type: "error",
+        duration: 5000,
+      });
       console.error("Error creating/updating product:", error);
     }
   };
@@ -116,8 +129,20 @@ export const useProduct = () => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       try {
         await dispatch(deleteProduct(id));
+        toaster.create({
+          title: "Product deleted",
+          description: "The product has been removed successfully.",
+          type: "success",
+          duration: 3000,
+        });
       } catch (err) {
         console.error(err);
+        toaster.create({
+          title: "Error",
+          description: "Failed to delete product",
+          type: "error",
+          duration: 5000,
+        });
       }
     }
   };
