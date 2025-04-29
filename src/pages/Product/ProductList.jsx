@@ -66,6 +66,8 @@ export default function ProductList({
                     <Flex justifyContent={"end"} gap={1}>
                       <Button
                         p={2}
+                        color={"black"}
+                        background={"transparent"}
                         _hover={{ background: "gray.200" }}
                         variant="solid"
                         onClick={() => onEditClick(product)}
@@ -74,11 +76,13 @@ export default function ProductList({
                       </Button>
                       <Button
                         p={2}
+                        color={"red"}
+                        background={"transparent"}
                         _hover={{ background: "gray.200" }}
                         variant="solid"
                         onClick={() => onDeleteClick(product.id)}
                       >
-                        <Trash2 size={16} color="red" />
+                        <Trash2 size={16} />
                       </Button>
                     </Flex>
                   </Table.Cell>

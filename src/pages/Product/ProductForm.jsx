@@ -212,6 +212,7 @@ export default function ProductForm({
                 <Button
                   borderRadius="md"
                   color={"black"}
+                  background={"transparent"}
                   _hover={{ backgroundColor: "gray.200" }}
                   borderWidth={1}
                   borderColor={"gray.300"}

@@ -81,6 +81,8 @@ export default function UserList({
                     <Flex justifyContent={"end"} gap={1}>
                       <Button
                         p={2}
+                        color={"black"}
+                        background={"transparent"}
                         _hover={{ background: "gray.200" }}
                         variant="solid"
                         onClick={() => onEditClick(user)}
@@ -89,11 +91,13 @@ export default function UserList({
                       </Button>
                       <Button
                         p={2}
+                        color={"red"}
+                        background={"transparent"}
                         _hover={{ background: "gray.200" }}
                         variant="solid"
                         onClick={() => onDeleteClick(user.id)}
                       >
-                        <Trash2 size={20} color="red" />
+                        <Trash2 size={20} />
                       </Button>
                     </Flex>
                   </Table.Cell>

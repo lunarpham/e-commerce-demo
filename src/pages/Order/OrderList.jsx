@@ -160,6 +160,8 @@ export default function OrderList({
                     </Table.Cell>
                     <Table.Cell textAlign={"right"}>
                       <Button
+                        color={"black"}
+                        background={"transparent"}
                         _hover={{ background: "gray.200" }}
                         onClick={() => onViewDetails(order.id)}
                       >
