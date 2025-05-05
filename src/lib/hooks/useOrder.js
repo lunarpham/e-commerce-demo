@@ -45,19 +45,21 @@ export const useOrder = () => {
     dispatch(clearOrder());
   };
 
-  const confirmStatusChange = (orderId, newStatus) => {
+  // In the handleStatusChange function
+  const handleStatusChange = (orderId, newStatus) => {
     const orderToUpdate = orders.find((o) => o.id === orderId);
     if (!orderToUpdate) return;
 
     const previousStatus = orderToUpdate.status;
     const orderName = `Order #${orderId}`;
+    const currentVersion = orderToUpdate.version || 1;
 
-    // Apply optimistic update immediately
     dispatch(
       updateOrderStatusOptimistically({
         id: orderId,
         status: newStatus,
         previousStatus,
+        version: currentVersion,
       })
     );
 
@@ -65,20 +67,20 @@ export const useOrder = () => {
       title: "Updating order status",
       description: `Changing ${orderName} from ${previousStatus} to ${newStatus}`,
       type: "loading",
-      duration: null, // Don't automatically dismiss
+      duration: null,
     });
 
-    // Then update the status in the background
     dispatch(
       updateOrderStatus({
         id: orderId,
         status: newStatus,
         previousStatus,
+        version: currentVersion,
       })
     )
       .unwrap()
-      .then(() => {
-        // Success - dismiss loading toast and show success
+      .then((updatedOrder) => {
+        // Success handling
         toaster.dismiss(loadingToast.id);
         toaster.create({
           title: "Order updated",
@@ -86,21 +88,32 @@ export const useOrder = () => {
           type: "success",
           duration: 3000,
         });
+
+        // Refresh orders list
+        dispatch(fetchOrders());
       })
       .catch((error) => {
         toaster.dismiss(loadingToast.id);
-        console.error("Failed to update order status:", error);
-        toaster.create({
-          title: "Update failed",
-          description: `Failed to update ${orderName} status`,
-          type: "error",
-          duration: 5000,
-        });
+
+        if (error.status === 409 || error.message?.includes("version")) {
+          toaster.create({
+            title: "Update Conflict",
+            description:
+              "This order has been modified by someone else. The list has been refreshed.",
+            type: "error",
+            duration: 5000,
+          });
+          dispatch(fetchOrders());
+        } else {
+          console.error("Failed to update order status:", error);
+          toaster.create({
+            title: "Update failed",
+            description: `Failed to update ${orderName} status`,
+            type: "error",
+            duration: 5000,
+          });
+        }
       });
-  };
-  // Simplified status change handler - directly applies changes without warning
-  const handleStatusChange = (orderId, newStatus) => {
-    confirmStatusChange(orderId, newStatus);
   };
 
   return {

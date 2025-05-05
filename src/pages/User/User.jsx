@@ -1,16 +1,16 @@
 import React from "react";
 import { Flex } from "@chakra-ui/react";
-import { useProduct } from "../../lib/hooks/useProduct";
-import ProductHeader from "./ProductHeader";
-import ProductSearch from "./ProductSearch";
-import ProductList from "./ProductList";
-import ProductForm from "./ProductForm";
+import { useUser } from "../../lib/hooks/useUser";
+import UserHeader from "./components/UserHeader";
+import UserSearch from "./components/UserSearch";
+import UserList from "./components/UserList";
+import UserForm from "./components/UserForm";
 
-export default function Product() {
+export default function User() {
   const {
     // State
-    products,
-    product,
+    users,
+    user,
     isLoading,
     isDialogOpen,
     isEditMode,
@@ -24,7 +24,7 @@ export default function Product() {
     handleEditClick,
     handleSubmit,
     handleDeleteClick,
-  } = useProduct();
+  } = useUser();
 
   return (
     <Flex
@@ -36,23 +36,22 @@ export default function Product() {
       minHeight="100vh"
       backgroundColor="white"
     >
-      <ProductHeader onAddClick={handleOpenAddDialog} />
-      <ProductSearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-      <ProductList
-        products={products}
+      <UserHeader onAddNewUser={handleOpenAddDialog} />
+      <UserSearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <UserList
+        users={users}
         isLoading={isLoading}
         searchTerm={searchTerm}
         onEditClick={handleEditClick}
         onDeleteClick={handleDeleteClick}
       />
-      <ProductForm
+      <UserForm
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}
         onSubmit={handleSubmit}
         initialData={formInitialData}
         isEditMode={isEditMode}
         isLoading={isLoading}
-        product={product}
       />
     </Flex>
   );

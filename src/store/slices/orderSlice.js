@@ -50,14 +50,22 @@ export const fetchOrderById = createAsyncThunk(
 // Status update with optimistic updates
 export const updateOrderStatus = createAsyncThunk(
   "order/updateOrderStatus",
-  async ({ id, status, previousStatus }, { rejectWithValue }) => {
+  async ({ id, status, previousStatus, version }, { rejectWithValue }) => {
     try {
-      // Use the specific status endpoint
+      // Include version in the payload
       const response = await axios.put(ENDPOINTS.ORDER_STATUS(id), {
         status,
+        version,
       });
       return { ...response.data, id };
     } catch (error) {
+      if (error.response?.status === 409) {
+        return rejectWithValue({
+          status: 409,
+          message: "Version conflict - order has been modified",
+          previousStatus,
+        });
+      }
       // When rejecting, include the previous status so we can revert
       return rejectWithValue({
         error: error.response?.data || error.message,
@@ -181,6 +189,18 @@ const orderSlice = createSlice({
 
         // Remove from optimistic updates
         delete state.optimisticUpdates[orderId];
+
+        // Update the order in the orders array with the new version using map
+        if (action.payload) {
+          state.orders = state.orders.map((order) =>
+            order.id === orderId ? { ...order, ...action.payload } : order
+          );
+
+          // Also update current order if it's the same one
+          if (state.order && state.order.id === orderId) {
+            state.order = { ...state.order, ...action.payload };
+          }
+        }
       })
       .addCase(updateOrderStatus.rejected, (state, action) => {
         const orderId = action.meta.arg.id;

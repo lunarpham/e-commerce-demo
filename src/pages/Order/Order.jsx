@@ -1,9 +1,9 @@
 import React from "react";
 import { Flex } from "@chakra-ui/react";
-import OrderHeader from "./OrderHeader";
-import OrderSearch from "./OrderSearch";
-import OrderList from "./OrderList";
-import OrderDetails from "./OrderDetails";
+import OrderHeader from "./components/OrderHeader";
+import OrderSearch from "./components/OrderSearch";
+import OrderList from "./components/OrderList";
+import OrderDetails from "./components/OrderDetails";
 import { useOrder } from "../../lib/hooks/useOrder";
 
 export default function Order() {

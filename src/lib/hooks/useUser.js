@@ -24,6 +24,7 @@ export const useUser = () => {
     name: "",
     email: "",
     role: "customer",
+    version: 1,
   });
 
   // Fetch users on initial load
@@ -38,6 +39,7 @@ export const useUser = () => {
         name: user.name || "",
         email: user.email || "",
         role: user.role || "customer",
+        version: user.version || 1,
       });
     }
   }, [user, isEditMode]);
@@ -48,6 +50,7 @@ export const useUser = () => {
       name: "",
       email: "",
       role: "customer",
+      version: 1,
     });
     setIsEditMode(false);
     setCurrentUserId(null);
@@ -69,6 +72,7 @@ export const useUser = () => {
       name: userFromList.name || "",
       email: userFromList.email || "",
       role: userFromList.role || "customer",
+      version: userFromList.version || 1,
     });
     setIsDialogOpen(true);
     dispatch(fetchUserById(userFromList.id));
@@ -79,18 +83,57 @@ export const useUser = () => {
       name: formData.name.trim(),
       email: formData.email.trim(),
       role: formData.role,
+      version: formData.version,
     };
 
     try {
       if (isEditMode && currentUserId) {
-        await dispatch(updateUser({ id: currentUserId, userData }));
-        toaster.create({
-          title: "User updated",
-          description: `${formData.name}'s profile has been updated.`,
-          type: "success",
-          duration: 3000,
-        });
+        const resultAction = await dispatch(
+          updateUser({ id: currentUserId, userData })
+        );
+
+        if (updateUser.rejected.match(resultAction)) {
+          // Handle specific error types
+          if (
+            resultAction.payload?.status === 409 ||
+            resultAction.payload?.message?.includes("version")
+          ) {
+            // Version conflict detected
+            toaster.create({
+              title: "Update Conflict",
+              description:
+                "This user has been modified by someone else. The list has been refreshed.",
+              type: "error",
+              duration: 5000,
+            });
+            // Optionally refresh the users list to get the latest version
+            dispatch(fetchUsers());
+            handleCloseDialog();
+            return;
+          } else if (resultAction.payload?.status === 404) {
+            toaster.create({
+              title: "User Deleted",
+              description: "The user you were trying to edit no longer exists.",
+              type: "error",
+              duration: 5000,
+            });
+            handleCloseDialog();
+            return;
+          }
+        }
+
+        if (!resultAction.error) {
+          toaster.create({
+            title: "User updated",
+            description: `${formData.name}'s profile has been updated.`,
+            type: "success",
+            duration: 3000,
+          });
+          handleCloseDialog();
+        }
       } else {
+        delete userData.version;
+        // Create new user logic (unchanged)
         await dispatch(createUser(userData));
         toaster.create({
           title: "User created",
@@ -98,13 +141,14 @@ export const useUser = () => {
           type: "success",
           duration: 3000,
         });
+        handleCloseDialog();
       }
-      handleCloseDialog();
     } catch (error) {
       console.error("Error creating/updating user:", error);
       toaster.create({
         title: "Error",
-        description: "Failed to save user information",
+        description:
+          error.payload?.message || "Failed to save user information",
         type: "error",
         duration: 5000,
       });

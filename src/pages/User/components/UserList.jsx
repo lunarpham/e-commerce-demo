@@ -1,7 +1,7 @@
 import React from "react";
 import { Table, Spinner, Flex, Button, Text, Box } from "@chakra-ui/react";
 import { SquarePen, Trash2 } from "lucide-react";
-import { formatDate } from "../../lib/utils";
+import { formatDate } from "../../../lib/utils";
 
 export default function UserList({
   users,

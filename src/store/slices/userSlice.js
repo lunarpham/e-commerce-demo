@@ -47,12 +47,28 @@ export const createUser = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
   "user/updateUser",
-  async ({ id, userData }, { rejectWithValue }) => {
+  async ({ id, userData }, { rejectWithValue, dispatch }) => {
     try {
       const response = await axios.put(ENDPOINTS.USER(id), userData);
-      return { ...response.data, id }; // Ensure the ID is included in the response
+      return { ...response.data, id };
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      if (error.response) {
+        if (error.response.status === 404) {
+          // Resource was already deleted
+          dispatch(fetchUsers());
+          return rejectWithValue({
+            status: 404,
+            message: "User not found",
+          });
+        } else if (error.response.status === 409) {
+          // Version conflict
+          return rejectWithValue({
+            status: 409,
+            message: "Version conflict - user has been modified",
+          });
+        }
+      }
+      return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
@@ -134,12 +150,9 @@ const userSlice = createSlice({
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        const index = state.users.findIndex(
-          (user) => user.id === action.payload.id
+        state.users = state.users.map((user) =>
+          user.id === action.payload.id ? action.payload : user
         );
-        if (index !== -1) {
-          state.users[index] = action.payload;
-        }
       })
       .addCase(updateUser.rejected, (state, action) => {
         state.isLoading = false;

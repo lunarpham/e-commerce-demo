@@ -9,7 +9,7 @@ import {
   Box,
 } from "@chakra-ui/react";
 import { Eye } from "lucide-react";
-import { formatDate } from "../../lib/utils";
+import { formatDate } from "../../../lib/utils";
 
 export default function OrderList({
   orders,

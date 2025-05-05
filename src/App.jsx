@@ -8,10 +8,10 @@ import { LayoutPanelLeft, Package, Users, ShoppingCart } from "lucide-react";
 import { Toaster } from "./components/ui/toaster";
 
 // Lazy load components
-const Home = lazy(() => import("./pages/Home"));
-const User = lazy(() => import("./pages/User"));
-const Product = lazy(() => import("./pages/Product"));
-const Order = lazy(() => import("./pages/Order"));
+const Home = lazy(() => import("./pages/Home/Home"));
+const User = lazy(() => import("./pages/User/User"));
+const Product = lazy(() => import("./pages/Product/Product"));
+const Order = lazy(() => import("./pages/Order/Order"));
 
 // Loading fallback
 const LoadingFallback = () => (
@@ -20,48 +20,38 @@ const LoadingFallback = () => (
   </Flex>
 );
 
+const LazyComponent = ({ component: Component }) => (
+  <Suspense fallback={<LoadingFallback />}>
+    <Component />
+  </Suspense>
+);
+
 function App() {
   const routes = [
     {
       route: "/",
-      element: (
-        <Suspense fallback={<LoadingFallback />}>
-          <Home />
-        </Suspense>
-      ),
+      element: <LazyComponent component={Home} />,
       title: "Dashboard",
       icon: <LayoutPanelLeft />,
       description: "ECommerce application",
     },
     {
       route: "/user",
-      element: (
-        <Suspense fallback={<LoadingFallback />}>
-          <User />
-        </Suspense>
-      ),
+      element: <LazyComponent component={User} />,
       title: "User",
       icon: <Users />,
       description: "User page",
     },
     {
       route: "/product",
-      element: (
-        <Suspense fallback={<LoadingFallback />}>
-          <Product />
-        </Suspense>
-      ),
+      element: <LazyComponent component={Product} />,
       title: "Product",
       icon: <Package />,
       description: "Product page",
     },
     {
       route: "/order",
-      element: (
-        <Suspense fallback={<LoadingFallback />}>
-          <Order />
-        </Suspense>
-      ),
+      element: <LazyComponent component={Order} />,
       title: "Order",
       icon: <ShoppingCart />,
       description: "Order page",

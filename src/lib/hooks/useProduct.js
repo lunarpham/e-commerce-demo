@@ -17,6 +17,7 @@ const initialState = {
   price: 0,
   stock: 0,
   category: "",
+  version: 1,
 };
 
 export const useProduct = () => {
@@ -46,6 +47,7 @@ export const useProduct = () => {
         price: product.price.toString(),
         stock: product.stock.toString(),
         category: product.category || "",
+        version: product.version || 1,
       });
     }
   }, [product, isEditMode]);
@@ -58,6 +60,7 @@ export const useProduct = () => {
       price: "0",
       stock: "0",
       category: "",
+      version: 1,
     });
     setIsEditMode(false);
     setCurrentProductId(null);
@@ -81,6 +84,7 @@ export const useProduct = () => {
       price: productFromList.price ? productFromList.price.toString() : "0",
       stock: productFromList.stock ? productFromList.stock.toString() : "0",
       category: productFromList.category || "",
+      version: productFromList.version || 1,
     });
     setIsDialogOpen(true);
     dispatch(fetchProductById(productFromList.id));
@@ -93,35 +97,75 @@ export const useProduct = () => {
       price: parseFloat(formData.price),
       stock: parseInt(formData.stock, 10),
       category: formData.category.trim(),
+      version: formData.version,
     };
 
     try {
       if (isEditMode && currentProductId) {
-        await dispatch(updateProduct({ id: currentProductId, productData }));
-        toaster.create({
-          title: "Product updated",
-          description: `${formData.name} has been updated successfully.`,
-          type: "success",
-          duration: 3000,
-        });
+        const resultAction = await dispatch(
+          updateProduct({ id: currentProductId, productData })
+        );
+
+        if (updateProduct.rejected.match(resultAction)) {
+          // Handle specific error types
+          if (resultAction.payload?.status === 404) {
+            toaster.create({
+              title: "Item Deleted",
+              description:
+                "The product you were trying to edit no longer exists.",
+              type: "error",
+              duration: 5000,
+            });
+            handleCloseDialog();
+            return;
+          } else if (
+            resultAction.payload?.status === 409 ||
+            resultAction.payload?.message?.includes("version")
+          ) {
+            // Handle version conflict
+            toaster.create({
+              title: "Update Conflict",
+              description:
+                "This product has been modified by someone else. The list has been refreshed.",
+              type: "error",
+              duration: 5000,
+            });
+            // Refresh products to get latest versions
+            dispatch(fetchProducts());
+            handleCloseDialog();
+            return;
+          }
+        }
+
+        if (!resultAction.error) {
+          toaster.create({
+            title: "Product updated",
+            description: `${formData.name} has been updated successfully.`,
+            type: "success",
+            duration: 3000,
+          });
+          handleCloseDialog();
+        }
       } else {
+        delete productData.version; // Remove version for new product creation
         await dispatch(createProduct(productData));
         toaster.create({
           title: "Product created",
-          description: `${formData.name} has been added to your inventory.`,
+          description: `${formData.name} has been added to inventory.`,
           type: "success",
           duration: 3000,
         });
+        handleCloseDialog();
       }
-      handleCloseDialog();
     } catch (error) {
+      console.error("Error creating/updating product:", error);
       toaster.create({
         title: "Error",
-        description: error.message || "Failed to save product",
+        description:
+          error.payload?.message || "Failed to save product information",
         type: "error",
         duration: 5000,
       });
-      console.error("Error creating/updating product:", error);
     }
   };
 

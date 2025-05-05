@@ -87,7 +87,8 @@ export default function Index() {
             <Package size={16} color="gray" />
           </Flex>
           <Text fontSize={"2xl"} fontWeight={"bold"}>
-            +{stats.products.change}
+            {stats.products.change > 0 ? "+" : ""}
+            {stats.products.change}
           </Text>
           <Text fontSize={"sm"} color="gray.500">
             {stats.products.percentChange > 0 ? "+" : ""}
@@ -110,7 +111,8 @@ export default function Index() {
             <ShoppingCart size={16} color="gray" />
           </Flex>
           <Text fontSize={"2xl"} fontWeight={"bold"}>
-            +{stats.orders.change}
+            {stats.orders.change > 0 ? "+" : ""}
+            {stats.orders.change}
           </Text>
           <Text fontSize={"sm"} color="gray.500">
             {stats.orders.percentChange > 0 ? "+" : ""}

@@ -10,7 +10,7 @@ import {
   Badge,
 } from "@chakra-ui/react";
 import { X } from "lucide-react";
-import { formatDateWithTime } from "../../lib/utils";
+import { formatDateWithTime } from "../../../lib/utils";
 
 export default function OrderDetails({ isOpen, order, onClose, isLoading }) {
   if (!order && !isLoading) {

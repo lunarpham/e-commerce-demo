@@ -47,12 +47,28 @@ export const createProduct = createAsyncThunk(
 
 export const updateProduct = createAsyncThunk(
   "product/updateProduct",
-  async ({ id, productData }, { rejectWithValue }) => {
+  async ({ id, productData }, { rejectWithValue, dispatch }) => {
     try {
       const response = await axios.put(ENDPOINTS.PRODUCT(id), productData);
       return { ...response.data, id }; // Ensure the ID is included in the response
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      if (error.response) {
+        if (error.response.status === 404) {
+          // Resource was already deleted
+          dispatch(fetchProducts());
+          return rejectWithValue({
+            status: 404,
+            message: "Product not found",
+          });
+        } else if (error.response.status === 409) {
+          // Version conflict
+          return rejectWithValue({
+            status: 409,
+            message: "Version conflict - product has been modified",
+          });
+        }
+      }
+      return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
@@ -134,12 +150,10 @@ const productSlice = createSlice({
       })
       .addCase(updateProduct.fulfilled, (state, action) => {
         state.isLoading = false;
-        const index = state.products.findIndex(
-          (product) => product.id === action.payload.id
+        // Replace findIndex and direct mutation with map-based approach
+        state.products = state.products.map((product) =>
+          product.id === action.payload.id ? action.payload : product
         );
-        if (index !== -1) {
-          state.products[index] = action.payload;
-        }
       })
       .addCase(updateProduct.rejected, (state, action) => {
         state.isLoading = false;
