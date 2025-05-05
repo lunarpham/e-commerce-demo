@@ -76,8 +76,8 @@ export const useUser = () => {
 
   const handleSubmit = async (formData) => {
     const userData = {
-      name: formData.name,
-      email: formData.email,
+      name: formData.name.trim(),
+      email: formData.email.trim(),
       role: formData.role,
     };
 

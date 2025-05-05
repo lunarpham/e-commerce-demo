@@ -88,11 +88,11 @@ export const useProduct = () => {
 
   const handleSubmit = async (formData) => {
     const productData = {
-      name: formData.name,
-      description: formData.description,
+      name: formData.name.trim(),
+      description: formData.description.trim(),
       price: parseFloat(formData.price),
       stock: parseInt(formData.stock, 10),
-      category: formData.category,
+      category: formData.category.trim(),
     };
 
     try {
